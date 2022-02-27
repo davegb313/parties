@@ -1,0 +1,14 @@
+.new-party {
+    margin: 6rem auto;
+    width: 60%;
+}
+
+.new-party input {
+    width: 98%;
+}
+
+@media (max-width: 768px) {
+    .new-party {
+        width: 80%;
+    }
+}

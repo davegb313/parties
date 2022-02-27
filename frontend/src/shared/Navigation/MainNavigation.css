@@ -1,0 +1,46 @@
+.main-navigation__menu-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: transparent;
+    border: none;
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    cursor: pointer;
+}
+
+.main-navigation__menu-btn span {
+    display: block;
+    width: 2.5rem;
+    height: 0.3rem;
+    padding: 1px;
+    background: #ffffff;
+  }
+  
+.main-navigation__title a {
+    text-decoration: none;
+    color: #ffa2a2;
+}
+
+.main-navigation__drawer-nav {
+    height: 100%;
+  }
+
+.main-navigation__title a:hover {
+    color: #ffffff;
+}
+
+
+@media (max-width: 768px) {
+    .main-navigation__title {
+        display: none;
+    }
+
+    .main-navigation__menu-btn {
+        display: flex;
+    }
+
+    .main-navigation__header-nav {
+        display: none;
+    }
+}

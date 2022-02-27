@@ -1,0 +1,14 @@
+.party-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-around;
+    margin-top: 2rem;
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+   .party-list{
+       grid-template-columns: auto;
+   }
+}

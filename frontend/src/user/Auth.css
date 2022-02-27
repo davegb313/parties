@@ -1,0 +1,20 @@
+.auth {
+    width: 40%;
+    margin: 6rem auto;
+}
+
+.auth input {
+    width: 98%;
+}
+
+.auth-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+
+@media (max-width: 768px) {
+    .auth {
+        width: 80%;
+    }
+}
