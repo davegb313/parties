@@ -1,16 +1,17 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Card from "../../shared/UIElemnets/Card";
 import Button from "../../shared/UIElemnets/Button";
 import Modal from "../../shared/UIElemnets/Modal";
 import Input from "../../shared/UIElemnets/Input";
 import { useForm } from "../../shared/hooks/form-hook";
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/util/validators";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 import "./PartyItem.css";
-import { useNavigate } from "react-router-dom";
 
 const PartyItem = props => {
+    const { isLoading, sendRequest, error, clearError } = useHttpClient();
     const [showModal, setShowModal] = useState(false);
     const openModalHandler = () => setShowModal(true);
     const closeModalHandler = () => setShowModal(false);
@@ -50,7 +51,15 @@ const PartyItem = props => {
         setShowModal(false);
     };
     const toUpdatingMode = props => navigate(`/parties/party/${partyId}`);
-    const deleteParty = () => {};
+    const deleteParty = async () => {
+        try {
+            await sendRequest(
+                `http://localhost:4000/parties/${partyId}`,
+                'DELETE'
+            )
+        } catch (err) {}
+        navigate('/parties/new');
+    };
 
     return (
         <React.Fragment>
@@ -68,9 +77,9 @@ const PartyItem = props => {
                     <React.Fragment>
                         {(props.creator === auth.userId) ? (<Button onClick={deleteParty}>DELETE</Button>) : null}
                         {(props.creator === auth.userId)
-                            ? 
+                            ?
                             (<Button onClick={toUpdatingMode}>UPDATE</Button>)
-                            : 
+                            :
                             ((<Button>ATTEND</Button>))}
                     </React.Fragment>
                 }
