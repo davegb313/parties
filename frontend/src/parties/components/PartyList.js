@@ -29,6 +29,7 @@ const PartyList = props => {
                 description={party.description}
                 address={party.address}
                 isLoggedIn={props.isLoggedIn}
+                onDelete={props.onDeleteParty}
                 />
                 ))}
         </ul>

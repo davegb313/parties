@@ -45,8 +45,8 @@ const App = () => {
                 <Routes>
                   <Route path="/parties/all" element={<Parties />} />
                   <Route path="/parties/new" element={<NewParty/>} />
-                  <Route path="/parties/:userId" element={<UserInfo />} />
                   <Route path="/parties/party/:partyId" element={<UpdateParty />} />
+                  <Route path="/user/:userId" element={<UserInfo />} />
                 </Routes>
               ) : (
                 <Routes>

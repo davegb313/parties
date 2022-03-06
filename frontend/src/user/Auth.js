@@ -8,6 +8,7 @@ import LoadingSpinner from "../shared/UIElemnets/LoadingSpinner";
 import { useForm } from "../shared/hooks/form-hook";
 import { useHttpClient } from "../shared/hooks/http-hook";
 import { AuthContext } from "../shared/context/auth-context";
+import ImageUpload from "../shared/UIElemnets/ImageUpload";
 import Card from "../shared/UIElemnets/Card";
 import Input from "../shared/UIElemnets/Input";
 import "./Auth.css";
@@ -118,7 +119,7 @@ const Auth = () => {
                         onInput={inputHandler}
                     />
                     {!isLoginMode && (
-                        <h3>IMAGE UPLOAD</h3>
+                        <ImageUpload id='image' />
                     )}
                     <Input
                         id="password"

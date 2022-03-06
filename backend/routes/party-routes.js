@@ -28,6 +28,8 @@ router.patch(
     partyControllers.updateParty
 );
 
+router.get('/get-saved/:uid', partyControllers.getSaved);
+
 router.post(
     '/save/:pid',
     [ check('userId').not().isEmpty() ],

@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Card from "../../shared/UIElemnets/Card";
 import Button from "../../shared/UIElemnets/Button";
 import Modal from "../../shared/UIElemnets/Modal";
-import Input from "../../shared/UIElemnets/Input";
+import ErrorModal from "../../shared/UIElemnets/ErrorModal";
+import LoadingSpinner from "../../shared/UIElemnets/LoadingSpinner";
 import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
@@ -51,18 +52,35 @@ const PartyItem = props => {
         setShowModal(false);
     };
     const toUpdatingMode = props => navigate(`/parties/party/${partyId}`);
+
     const deleteParty = async () => {
         try {
             await sendRequest(
                 `http://localhost:4000/parties/${partyId}`,
                 'DELETE'
             )
-        } catch (err) {}
-        navigate('/parties/new');
+            props.onDelete(props.id);
+        } catch (err) { }
     };
+
+    const saveParty = async () => {
+        try {
+            await sendRequest(
+                `http://localhost:4000/parties/save/${partyId}`,
+                'POST',
+                JSON.stringify({
+                    userId: auth.userId
+                }),
+                {
+                    'Content-Type': 'application/json'
+                }
+            )
+        } catch (err) { }
+    }
 
     return (
         <React.Fragment>
+            <ErrorModal error={error} onClear={clearError} />
             <Modal
                 show={showModal}
                 onClose={closeModalHandler}
@@ -80,7 +98,7 @@ const PartyItem = props => {
                             ?
                             (<Button onClick={toUpdatingMode}>UPDATE</Button>)
                             :
-                            ((<Button>ATTEND</Button>))}
+                            ((<Button onClick={saveParty}>ATTEND</Button>))}
                     </React.Fragment>
                 }
             >
@@ -95,6 +113,7 @@ const PartyItem = props => {
             </Modal>
             <li className="party-item">
                 <Card>
+                    {isLoading && <LoadingSpinner asOverlay />}
                     <div className="party-item-image">
                         <img
                             src={props.image}
@@ -105,7 +124,14 @@ const PartyItem = props => {
                         <h2>{props.title}</h2>
                         <div className="party-item-buttons">
                             <Button onClick={openModalHandler}>DETAILS</Button>
-                            {props.isLoggedIn ? null : ((props.creator === auth.userId) ? null : (<Button>ATTEND</Button>))}
+                            {props.isLoggedIn ?
+                                null :
+                                (
+                                    (props.creator === auth.userId) ?
+                                        null :
+                                        (<Button onClick={saveParty}>ATTEND</Button>)
+                                )
+                            }
                         </div>
                     </div>
                 </Card>

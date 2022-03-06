@@ -34,6 +34,9 @@ const Parties = () => {
         fetchParties();
     }, [sendRequest]);
 
+    const partyDeletedHandler = deletedPartyId => {
+        setLoadedParties(prevParties => prevParties.filter(party=> party.id !== deletedPartyId));
+    }
 
     return (
         <React.Fragment>
@@ -47,7 +50,12 @@ const Parties = () => {
                         <LoadingSpinner />
                     </div>
                 )}
-                {!isLoading && loadedParties && <PartyList items={loadedParties} userId={auth.userId} isLoggedIn={false} />}
+                {!isLoading && loadedParties && <PartyList 
+                                                    items={loadedParties} 
+                                                    userId={auth.userId} 
+                                                    isLoggedIn={false} 
+                                                    onDeleteParty={partyDeletedHandler}/>
+                }
             </div>
         </React.Fragment>);
 }

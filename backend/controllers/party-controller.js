@@ -69,7 +69,6 @@ const createParty = async (req, res, next) => {
         let error = new HttpError('Fetching user with providen ID failed', 500);
         return next(error);
     }
-    console.log(createdParty);
 
     try {
         await createdParty.save();
@@ -133,23 +132,23 @@ const deleteParty = async (req, res, next) => {
     res.status(200).json({ message: "party deleted" });
 }
 
-// const getSaved = async (req, res, next) => {
-//     let userId = req.params.uid;
+const getSaved = async (req, res, next) => {
+    let userId = req.params.uid;
 
-//     let savedParties;
-//     try {
-//         savedParties = await User.findById({ userId });
-//     } catch (err) {
-//         let error = new HttpError('Something went wrong, could not delete party', 500)
-//         return next(error);
-//     }
+    let savedParties;
+    try {
+        savedParties = await Party.find({ savedBy: userId });
+    } catch (err) {
+        let error = new HttpError('Something went wrong, could not delete party', 500)
+        return next(error);
+    }
 
-//     if(!savedParties || savedParties === 0) {
-//         throw new HttpError('Could not find party with a providen user id', 404);
-//     }
+    if(!savedParties || savedParties === 0) {
+        throw new HttpError('Could not find party with a providen user id', 404);
+    }
 
-//     res.status(200).json({ savedParties: savedParties.savedParties.map(party=> party.toObject({ getters: true })) });
-// }
+    res.status(200).json({ savedParties: savedParties.map(party => party.toObject({ getters: true })) });
+}
 
 const saveParty = async (req, res, next) => {
     let partyId = req.params.pid;
@@ -187,7 +186,7 @@ const unsaveParty = async (req, res, next) => {
     try {
         savedParty = await Party.findById(partyId);
     } catch (err) {
-        let error = new HttpError('Fetching user failed', 500);
+        let error = new HttpError('Fetching party failed', 500);
         return next(error);
     }
 
@@ -213,5 +212,6 @@ exports.getPartyById = getPartyById;
 exports.createParty = createParty;
 exports.updateParty = updateParty;
 exports.deleteParty = deleteParty;
+exports.getSaved = getSaved;
 exports.saveParty = saveParty;
 exports.unsaveParty = unsaveParty;
