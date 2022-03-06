@@ -4,13 +4,15 @@ const { check } = require('express-validator');
 const router = express.Router();
 
 const partyControllers = require('../controllers/party-controller');
+const fileUpload = require('../middlware/file-upload');
 const { route } = require('./user-routes');
 
 router.get('/all', partyControllers.getParties);
 router.get('/:uid', partyControllers.getPartiesById);
 router.get('/party/:pid', partyControllers.getPartyById);
 router.post(
-    '/new', 
+    '/new',
+    fileUpload.single('image'),
     [
         check('title').not().isEmpty(),
         check('description').isLength({min: 5}),

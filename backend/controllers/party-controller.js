@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 const HttpError = require('../models/http-error');
 const Party = require('../models/party-model');
 const User = require('../models/user-model');
+const fs = require('fs');
 const mongoose = require('mongoose');
 
 
@@ -56,7 +57,7 @@ const createParty = async (req, res, next) => {
     const createdParty = new Party({
         title,
         description,
-        image: 'https://media-cdn.tripadvisor.com/media/photo-s/14/03/b3/4e/tlv.jpg',
+        image: 'http://localhost:4000/' + req.file.path,
         address,
         creator,
         savedBy: []
@@ -123,12 +124,17 @@ const deleteParty = async (req, res, next) => {
         return next(new HttpError('Could not find party with providen id', 404));
     }
 
+    let imagePath = party.image;
+
     try {
         party.remove();
     } catch (err) {
         let error = new HttpError('Something went wrong, could not delete party', 500);
         return next(error);
     }
+
+    fs.unlink(imagePath, err => console.log(err));
+    
     res.status(200).json({ message: "party deleted" });
 }
 
