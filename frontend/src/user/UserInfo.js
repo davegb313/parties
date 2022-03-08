@@ -23,17 +23,32 @@ const UserInfo = props => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const userDataRes = await sendRequest(`http://localhost:4000/user/${userId}`);
+                const userDataRes = await sendRequest(
+                    `http://localhost:4000/user/${userId}`, 
+                    'GET', 
+                    null, 
+                    {Authorization: 'Bearer ' + auth.token}
+                );
                 setLoadedUser(userDataRes.user);
             } catch (err) { }
 
             try {
-                const userPartiesRes = await sendRequest(`http://localhost:4000/parties/${userId}`);
+                const userPartiesRes = await sendRequest(
+                    `http://localhost:4000/parties/${userId}`, 
+                    'GET', 
+                    null, 
+                    {Authorization: 'Bearer ' + auth.token}
+                    );
                 userPartiesRes ? setLoadedUserParties(userPartiesRes.userParties) : setLoadedUserParties([]);
             } catch (err) { }
 
             try {
-                const userSavedPartiesRes = await sendRequest(`http://localhost:4000/parties/get-saved/${userId}`);
+                const userSavedPartiesRes = await sendRequest(
+                    `http://localhost:4000/parties/get-saved/${userId}`, 
+                    'GET', 
+                    null, 
+                    {Authorization: 'Bearer ' + auth.token}
+                );    
                 userSavedPartiesRes ? setSavedUserParties(userSavedPartiesRes.savedParties) : setSavedUserParties([]);
             } catch (err) { }
         }
@@ -47,7 +62,7 @@ const UserInfo = props => {
     const partyUnsaveHandler = unsavedPartyId => setSavedUserParties(
         prevParties => prevParties.filter(party => party.id !== unsavedPartyId)
     );
-
+    
     return (
         <React.Fragment>
             <ErrorModal error={error} onClick={clearError} />

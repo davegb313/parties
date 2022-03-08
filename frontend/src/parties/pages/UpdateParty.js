@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Button from "../../shared/UIElemnets/Button";
@@ -7,11 +7,14 @@ import ErrorModal from "../../shared/UIElemnets/ErrorModal";
 import LoadingSpinner from "../../shared/UIElemnets/LoadingSpinner";
 import Input from "../../shared/UIElemnets/Input";
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/util/validators";
+import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import './UpdateParty.css';
+import Auth from "../../user/Auth";
 
 const UpdateParty = () => {
+    const auth = useContext(AuthContext);
     const navigate = useNavigate();
     const partyId = useParams().partyId;
     const [loadedParty, setLoadedParty] = useState();
@@ -33,7 +36,13 @@ const UpdateParty = () => {
     useEffect(() => {
         let fetchParty = async () => {
             try {
-                let resData = await sendRequest(`http://localhost:4000/parties/party/${partyId}`)
+                let resData = await sendRequest(
+                    `http://localhost:4000/parties/party/${partyId}`,
+                    'GET',
+                    null,
+                    {
+                        Authorization: 'Bearer ' + auth.token
+                    });
                 setLoadedParty(resData.party);
                 setFormData(
                     {
@@ -63,7 +72,10 @@ const UpdateParty = () => {
                     title: formState.inputs.title.value,
                     description: formState.inputs.description.value
                 }),
-                { 'Content-Type': 'application/json' }
+                {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + auth.token 
+                }
             );
             navigate('/parties/all')
         } catch (err) { }

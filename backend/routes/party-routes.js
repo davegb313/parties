@@ -5,9 +5,12 @@ const router = express.Router();
 
 const partyControllers = require('../controllers/party-controller');
 const fileUpload = require('../middlware/file-upload');
-const { route } = require('./user-routes');
+const checkAuth = require('../middlware/check-auth');
 
 router.get('/all', partyControllers.getParties);
+
+router.use(checkAuth);
+
 router.get('/:uid', partyControllers.getPartiesById);
 router.get('/party/:pid', partyControllers.getPartyById);
 router.post(

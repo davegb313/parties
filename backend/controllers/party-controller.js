@@ -93,9 +93,15 @@ const updateParty = async (req, res, next) => {
     try {
         party = await Party.findById(partyId)
     } catch {
-        let error = new HttpError('Something went wrong, could not update party', 500)
+        let error = new HttpError('Something went wrong, could not update party', 500);
         return next(error);
     }
+
+    if (party.creator.toString() !== req.userData.userId) {
+        let error = new HttpError('You are not allowed to change this party', 401);
+        return next(error);
+    }
+
     party.title = title;
     party.description = description;
 
@@ -124,6 +130,11 @@ const deleteParty = async (req, res, next) => {
         return next(new HttpError('Could not find party with providen id', 404));
     }
 
+    if (party.creator.toString() !== req.userData.userId) {
+        let error = new HttpError('You are not allowed to delete this party', 401);
+        return next(error);
+    }
+
     let imagePath = party.image;
 
     try {
@@ -134,7 +145,7 @@ const deleteParty = async (req, res, next) => {
     }
 
     fs.unlink(imagePath, err => console.log(err));
-    
+
     res.status(200).json({ message: "party deleted" });
 }
 

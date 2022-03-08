@@ -11,6 +11,7 @@ import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 import "./NewParty.css"
+import ImageUpload from "../../shared/UIElemnets/ImageUpload";
 
 const NewParty = props => {
     const auth = useContext(AuthContext);
@@ -29,6 +30,10 @@ const NewParty = props => {
             address: {
                 value: '',
                 isValid: false
+            },
+            image: {
+                value: null,
+                isValid: false
             }
         },
         false
@@ -37,19 +42,19 @@ const NewParty = props => {
     const submitHandler = async event => {
         event.preventDefault();
         try {
+            let formData = new FormData();
+            formData.append('title', formState.inputs.title.value);
+            formData.append('description', formState.inputs.description.value);
+            formData.append('address', formState.inputs.address.value);
+            formData.append('creator', auth.userId);
+            formData.append('image', formState.inputs.image.value);
             await sendRequest(
                 'http://localhost:4000/parties/new',
                 'POST',
-                JSON.stringify({
-                    title: formState.inputs.title.value,
-                    description: formState.inputs.description.value,
-                    address: formState.inputs.address.value,
-                    creator: auth.userId
-                }),
+                formData,
                 {
-                    'Content-Type' : 'application/json'
-                }
-                );
+                    Authorization: 'Bearer ' + auth.token
+                });
             navigate('/parties/all');
             } catch (err) {}
         }
@@ -76,7 +81,7 @@ const NewParty = props => {
                         errorText="Plaese enter a valid party-description(min. 5 symbols)"
                         onInput={inputHandler}
                     />
-                    <h2>IMAGE UPLOAD</h2>
+                    <ImageUpload id='image' onInput={inputHandler}/>
                     <Input 
                         id="address" 
                         label="Address:" 

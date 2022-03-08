@@ -37,7 +37,8 @@ const Auth = () => {
         if (!isLoginMode) {
             setFromData({
                 ...formState.inputs,
-                username: undefined
+                username: undefined,
+                image: undefined
             },
                 formState.inputs.email.isValid && formState.inputs.password.isValid
             );
@@ -46,6 +47,10 @@ const Auth = () => {
                 ...formState.inputs,
                 username: {
                     value: '',
+                    isValid: false
+                },
+                image: {
+                    value: null,
                     isValid: false
                 }
             },
@@ -70,24 +75,23 @@ const Auth = () => {
                         'Content-Type': 'application/json'
                     }
                 );
-                auth.login(response.user.id);
+                auth.login(response.userId, response.token);
                 navigate('/parties/all');
             } catch (err) { };
         } else {
             try {
+                let formData = new FormData();
+                formData.append('username', formState.inputs.username.value);
+                formData.append('email', formState.inputs.email.value);
+                formData.append('password', formState.inputs.password.value);
+                formData.append('image', formState.inputs.image.value);
+
                 let response = await sendRequest(
                     'http://localhost:4000/signup',
                     'POST',
-                    JSON.stringify({
-                        username: formState.inputs.username.value,
-                        email: formState.inputs.email.value,
-                        password: formState.inputs.password.value
-                    }),
-                    {
-                        'Content-Type': 'application/json'
-                    }
+                    formData
                 );
-                auth.login(response.user.id);
+                auth.login(response.userId, response.token);
                 navigate('/parties/all');
             } catch (err) { }
         }
@@ -119,7 +123,7 @@ const Auth = () => {
                         onInput={inputHandler}
                     />
                     {!isLoginMode && (
-                        <ImageUpload id='image' />
+                        <ImageUpload id='image' onInput={inputHandler}/>
                     )}
                     <Input
                         id="password"

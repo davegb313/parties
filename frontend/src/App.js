@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import {
   BrowserRouter,
   Route,
@@ -12,49 +12,39 @@ import UpdateParty from './parties/pages/UpdateParty';
 import Auth from './user/Auth';
 import UserInfo from './user/UserInfo';
 import { AuthContext } from './shared/context/auth-context';
+import { useAuth } from './shared/hooks/auth-hook';
 import './App.css';
 
-
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState(undefined);
-
-  const login = useCallback((uid) => {
-    setIsLoggedIn(true);
-    setUserId(uid);
-  }, []);
-
-  const logout = useCallback(() => {
-    setIsLoggedIn(false);
-    setUserId(null);
-  }, []);
+  const { token, login, logout, userId } = useAuth();
 
   return (
     <AuthContext.Provider
-      value={{ 
-        isLoggedIn: isLoggedIn,
+      value={{
+        isLoggedIn: !!token,
+        token: token,
         userId: userId,
-        login: login, 
-        logout: logout 
+        login: login,
+        logout: logout
       }}
     >
       <BrowserRouter>
-          <MainNavigation />
-          <main>
-              {isLoggedIn ? (
-                <Routes>
-                  <Route path="/parties/all" element={<Parties />} />
-                  <Route path="/parties/new" element={<NewParty/>} />
-                  <Route path="/parties/party/:partyId" element={<UpdateParty />} />
-                  <Route path="/user/:userId" element={<UserInfo />} />
-                </Routes>
-              ) : (
-                <Routes>
-                  <Route path="/parties/all" element={<Parties />} />
-                  <Route path="/auth" element={<Auth />} />
-                </Routes>
-              )}
-          </main>
+        <MainNavigation />
+        <main>
+          {token ? (
+            <Routes>
+              <Route path="/parties/all" element={<Parties />} />
+              <Route path="/parties/new" element={<NewParty />} />
+              <Route path="/parties/party/:partyId" element={<UpdateParty />} />
+              <Route path="/user/:userId" element={<UserInfo />} />
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="/parties/all" element={<Parties />} />
+              <Route path="/auth" element={<Auth />} />
+            </Routes>
+          )}
+        </main>
       </BrowserRouter>
     </AuthContext.Provider>
   );

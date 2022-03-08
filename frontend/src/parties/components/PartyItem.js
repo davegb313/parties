@@ -57,7 +57,11 @@ const PartyItem = props => {
         try {
             await sendRequest(
                 `http://localhost:4000/parties/${partyId}`,
-                'DELETE'
+                'DELETE',
+                null,
+                {
+                    Authorization: 'Bearer ' + auth.token
+                }
             )
             props.onDelete(props.id);
         } catch (err) { }
@@ -72,7 +76,8 @@ const PartyItem = props => {
                     userId: auth.userId
                 }),
                 {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + auth.token
                 }
             )
         } catch (err) { }

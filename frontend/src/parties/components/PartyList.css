@@ -10,5 +10,7 @@
 @media (max-width: 768px) {
    .party-list{
        grid-template-columns: auto;
+       width: 90%;
+       margin: 1rem auto;
    }
 }

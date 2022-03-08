@@ -16,7 +16,6 @@ const AttendingItem = props => {
     const openModalHandler = () => setShowModal(true);
     const closeModalHandler = () => setShowModal(false);
     const partyId = props.id;
-    console.log(props.id);
 
     const submitHandler = event => {
         setShowModal(false);
@@ -31,7 +30,8 @@ const AttendingItem = props => {
                     userId: auth.userId
                 }),
                 {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + auth.token
                 }
             )
 
